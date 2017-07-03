@@ -1,0 +1,2 @@
+testing/images/eurotext.tif
+testing/images/phototest.tif

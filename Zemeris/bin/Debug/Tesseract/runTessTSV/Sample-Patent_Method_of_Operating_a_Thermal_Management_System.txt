@@ -1,0 +1,12 @@
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\00.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\01.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\02.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\03.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\04.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\05.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\06.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\07.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\08.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\09.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\10.tiff
+runTessTSV\images\.\Sample-Patent_Method_of_Operating_a_Thermal_Management_System\11.tiff

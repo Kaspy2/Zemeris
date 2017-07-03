@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Lemma",
+    "\\Lemma\\Test",
+    "\\Lemma\\Test\\x86",
+    "\\packages",
+    "\\packages\\PdfiumViewer.2.12.0.0",
+    "\\packages\\PdfiumViewer.2.12.0.0\\lib",
+    "\\Zemeris"
+  ],
+  "SelectedNode": "\\Lemma\\Test\\x86\\pdfium.dll",
+  "PreviewInSolutionExplorer": false
+}
