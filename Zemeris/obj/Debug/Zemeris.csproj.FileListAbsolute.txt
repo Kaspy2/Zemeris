@@ -43,3 +43,5 @@ C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\x86\pdfium.dll
 C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\PdfiumViewer.dll
 C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\PdfiumViewer.xml
 C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\nl\PdfiumViewer.resources.dll
+C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\OpenNLP.dll
+C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\SharpEntropy.dll

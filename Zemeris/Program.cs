@@ -40,19 +40,208 @@ namespace Zemeris
 
             foreach (string fileName in Directory.GetFiles(@"Tesseract\runTessTSV\output")) //for each TSV file in the output folder
             {
-                List<string[]> proper = t.Parse(fileName);  //parse it
+                List<string[]> proper = t.Parse(fileName,false);  //parse it
+
+                //pages = proper [i] [4]
+                int c = 0, lastPageNum = 1;
+                List<int> myarr = new List<int>();
+                Dictionary<int, int> md = new Dictionary<int, int>();
+                string[] lastItem = proper[proper.Count - 1];
+                foreach (var a in proper)
+                {
+                    //Console.WriteLine(a[3] + ": " + a[0]);
+                    if(Int32.Parse(a[3]) == lastPageNum)
+                    {
+                        c++;
+                        if (a == lastItem)
+                        {
+                            myarr.Add(c);
+                            md.Add(lastPageNum, c);
+                        }
+                    }
+                    else
+                    {
+                        myarr.Add(c);
+                        md.Add(lastPageNum, c);
+                        c = 0;
+                        lastPageNum = Int32.Parse(a[3]);
+                    }
+                }
+                int thispage = 1;
+                foreach (int xiint in myarr)
+                {
+                    Console.WriteLine("Page "+thispage + ": " +xiint);
+                    thispage++;
+                }
+
+                int fourty = (int)Math.Floor((double)md.Count * 40 / 100);
+                if (fourty == 0) fourty = 1;
+
+                var orderedMD = from pair in md orderby pair.Value ascending select pair;
+
+                int meanMin = 0, meanMax = 0;
+                for(int ix = 0; ix<fourty; ix++)
+                {
+                    meanMin += orderedMD.ElementAt(ix).Value;
+                    meanMax += orderedMD.ElementAt(orderedMD.Count()-1 - ix).Value;
+
+                }
+
+                meanMin /= fourty;
+                meanMax /= fourty;
+                List<int> pagesToInclude = new List<int>();
+                pagesToInclude.Add(1);
+                foreach(KeyValuePair<int,int> kvp in md)
+                {
+                    int distanceFromMin = Math.Abs(kvp.Value - meanMin);
+                    int distanceFromMax = Math.Abs(kvp.Value - meanMax);
+
+                    if(distanceFromMax < distanceFromMin  &&  kvp.Key != 1)
+                    {
+                        //page to be included
+                        pagesToInclude.Add(kvp.Key);
+                    }
+                }
+
+                var apl = t.Parse(fileName, true);
+                var proper2 = from stringArr in apl where (pagesToInclude.Contains(Int32.Parse(stringArr[5]))) select stringArr;
+
+                proper = new List<string[]>(proper2);
+                proper.AddRange(proper2);
+                //proper = proper2.ToList();  //now contains list of valids with empties
+                //an array containing word, left, top, width, height, page, conf
+                //proper to be paragraph processed
+
+                //now for segmentation into paragraphs
+
+                /*
+                 Check for "" / -1
+                 Check left for indentation
+
+                 */
+
+                /*
+                 New page detection
+                 */
+
+                List<string> paragraphs = new List<string>();
+
+                StringBuilder strcur = new StringBuilder();     //current par
+                int curMargin = 0, curPage = 1;
+                bool newPar = false;
+                for (int b = 0; b<proper.Count; b++)
+                {
+                    if(Int32.Parse(proper[b][6]) == -1)         //if -1, check next line to see if same indentation
+                    {
+                        //bool sameMarg = true;
+                        if (Int32.Parse(proper[b][5]) != curPage)
+                        {
+                            curPage = Int32.Parse(proper[b][5]);
+                            paragraphs.Add(strcur.ToString());
+                            strcur = new StringBuilder();
+                            newPar = true;
+                        }
+
+                        while (Int32.Parse(proper[b][6]) == -1)
+                        {
+                            b++;
+                        }
+                        
+
+                        if (newPar)     //if starting new paragraph
+                        {
+                            curMargin = Int32.Parse(proper[b][1]);
+                            newPar = false;
+                        }
+                        else if(curMargin < Int32.Parse(proper[b][1]))  //if indented
+                        {
+                            paragraphs.Add(strcur.ToString());
+                            newPar = true;
+                            strcur = new StringBuilder();
+                        }
+                        /*
+                        else if (curMargin + 5 > Int32.Parse(proper[b][1]) && curMargin - 5 < Int32.Parse(proper[b][1]))    //if same indentation
+                        {
+
+                        }
+                        */
+
+
+                        while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //add the whole line
+                        {
+                            strcur.Append(proper[b][0]+" ");
+                            b++;
+                        }
+                        b--;
+
+                        //now check if the line just processed ends with a - (for seperated words)
+
+                        while(proper[b][0].ElementAt(proper[b][0].Length-1) == '-' && Int32.Parse(proper[b+1][6]) == -1)
+                        {
+                            strcur.Remove(strcur.Length-2,2);//remove "- " so word can be continued
+                            b++;
+
+                            while (Int32.Parse(proper[b][6]) == -1)     //skip empties
+                            {
+                                b++;
+                            }
+
+                            while (b < proper.Count && Int32.Parse(proper[b][6]) != -1 && Int32.Parse(proper[b][5]) == curPage)     //add the whole line
+                            {
+                                strcur.Append(proper[b][0] + " ");
+                                b++;
+                            }
+                            b--;
+
+                        }
+
+                        //on new par, next iteration set curMarg
+                        //finally set the new margin
+                    }
+
+                    
+
+
+                    /*
+                    if (Int32.Parse(proper[b-1][6]) != -1)  //if previous is -1, start checking
+                    //else if not -1, add the word to the current par
+                    {
+                        strcur.Append(proper[b][0]);
+                    }
+                    //do stuff
+                    */
+
+
+                }
+
+                foreach(string par in paragraphs)
+                {
+                    Console.WriteLine("=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=");
+                    Console.WriteLine(par);
+                }
+
+
+               
+
+
+
+
+
+
+
+
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine("Number of elements in the list (before filtering): " + proper.Count);
                 //Console.WriteLine(og);
 
                 //decorate the console with a loading spinner
-                Spinner turner = new Spinner(Console.CursorLeft,Console.CursorTop);
-                turner.Start();
+                //Spinner turner = new Spinner(Console.CursorLeft,Console.CursorTop);
+                //turner.Start();
 
                 //filter the list
                 List<string[]> x = i.RemoveGibberish(i.RemoveStopWords(proper)); //now a list with no stop words and no gibberish
 
-                turner.Stop();
+                //turner.Stop();
 
                 Console.WriteLine("Number of elements in the list (after filtering): " + x.Count);
                 Console.WriteLine("-------------------------------------------------");
@@ -154,7 +343,10 @@ namespace Zemeris
                     foreach (List<string> block in page)
                     {
                         string blockString = String.Join(" ", block);
-                        Console.WriteLine("Page "+pbw.IndexOf(page)+" Block "+page.IndexOf(block)+":"+blockString);
+                        if(blockString != "")
+                        {
+                            Console.WriteLine("Page " + pbw.IndexOf(page) + " Block " + page.IndexOf(block) + ":" + blockString);
+                        }
                     }
                 }
 
