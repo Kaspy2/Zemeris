@@ -1,6 +1,0 @@
-runTessTSV\images\.\Sample-Patent_Binder_System\0.tiff
-runTessTSV\images\.\Sample-Patent_Binder_System\1.tiff
-runTessTSV\images\.\Sample-Patent_Binder_System\2.tiff
-runTessTSV\images\.\Sample-Patent_Binder_System\3.tiff
-runTessTSV\images\.\Sample-Patent_Binder_System\4.tiff
-runTessTSV\images\.\Sample-Patent_Binder_System\5.tiff

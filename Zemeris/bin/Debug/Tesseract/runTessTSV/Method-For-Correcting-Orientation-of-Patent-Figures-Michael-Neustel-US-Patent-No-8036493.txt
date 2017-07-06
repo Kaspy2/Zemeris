@@ -1,13 +1,1 @@
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\00.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\01.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\02.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\03.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\04.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\05.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\06.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\07.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\08.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\09.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\10.tiff
-runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\11.tiff
 runTessTSV\images\.\Method-For-Correcting-Orientation-of-Patent-Figures-Michael-Neustel-US-Patent-No-8036493\12.tiff

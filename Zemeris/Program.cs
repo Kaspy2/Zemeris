@@ -18,8 +18,11 @@ namespace Zemeris
 {
     class Program
     {
+        const int limit = 10;
+
         static void Main(string[] args)
-        { 
+        {
+            
             // Loading POS Tagger
             var tagger = new MaxentTagger(@"spostag\models\wsj-0-18-bidirectional-nodistsim.tagger");
             //a maximum entropy tagger
@@ -106,7 +109,7 @@ namespace Zemeris
                 var apl = t.Parse(fileName, true);
                 var proper2 = from stringArr in apl where (pagesToInclude.Contains(Int32.Parse(stringArr[5]))) select stringArr;
 
-                proper = new List<string[]>(proper2);
+                proper = new List<string[]>();
                 proper.AddRange(proper2);
                 //proper = proper2.ToList();  //now contains list of valids with empties
                 //an array containing word, left, top, width, height, page, conf
@@ -127,108 +130,182 @@ namespace Zemeris
                 List<string> paragraphs = new List<string>();
 
                 StringBuilder strcur = new StringBuilder();     //current par
-                int curMargin = 0, curPage = 1;
-                bool newPar = false;
-                for (int b = 0; b<proper.Count; b++)
+                int listMarg = 0, curPage = 1, margLineNum = 0, empty = 0;
+                bool dashDetect = false, flush = false, newParNextLine = false, dashDone = false, listDetect = false ;
+                ParaProc papr = new ParaProc();
+                //if last is ':' get next line's left, next next line's left (lookahead - make sure not same) to get indentation levels
+
+                //if same indentation levels add line
+
+                // ; or . add para
+                //if punc mark and next line not same right level
+
+                //if not same right level, flush to para
+                //if curr line less right level than next line flush to para ---------------
+
+                //keep checking deeper for same indentation until same found, once same found get the first line with the different indentation and generate a paragraph
+
+                for (int b = 0; b<proper.Count; b++)            //cycle through proper
                 {
                     if(Int32.Parse(proper[b][6]) == -1)         //if -1, check next line to see if same indentation
                     {
                         //bool sameMarg = true;
-                        if (Int32.Parse(proper[b][5]) != curPage)
+                        if (Int32.Parse(proper[b][5]) != curPage)   //seperates pages
                         {
                             curPage = Int32.Parse(proper[b][5]);
                             paragraphs.Add(strcur.ToString());
                             strcur = new StringBuilder();
-                            newPar = true;
+                            flush = true;
                         }
 
-                        while (Int32.Parse(proper[b][6]) == -1)
+                        while (Int32.Parse(proper[b][6]) == -1 && b<proper.Count)     //skip empties
                         {
                             b++;
                         }
-                        
 
-                        if (newPar)     //if starting new paragraph
+
+                        if (dashDetect)
                         {
-                            curMargin = Int32.Parse(proper[b][1]);
-                            newPar = false;
-                        }
-                        else if(curMargin < Int32.Parse(proper[b][1]))  //if indented
-                        {
-                            paragraphs.Add(strcur.ToString());
-                            newPar = true;
-                            strcur = new StringBuilder();
-                        }
-                        /*
-                        else if (curMargin + 5 > Int32.Parse(proper[b][1]) && curMargin - 5 < Int32.Parse(proper[b][1]))    //if same indentation
-                        {
-
-                        }
-                        */
-
-
-                        while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //add the whole line
-                        {
-                            strcur.Append(proper[b][0]+" ");
-                            b++;
-                        }
-                        b--;
-
-                        //now check if the line just processed ends with a - (for seperated words)
-
-                        while(proper[b][0].ElementAt(proper[b][0].Length-1) == '-' && Int32.Parse(proper[b+1][6]) == -1)
-                        {
-                            strcur.Remove(strcur.Length-2,2);//remove "- " so word can be continued
-                            b++;
-
-                            while (Int32.Parse(proper[b][6]) == -1)     //skip empties
-                            {
-                                b++;
-                            }
-
+                            int rewind = b;
+                            dashDetect = false;
                             while (b < proper.Count && Int32.Parse(proper[b][6]) != -1 && Int32.Parse(proper[b][5]) == curPage)     //add the whole line
                             {
                                 strcur.Append(proper[b][0] + " ");
                                 b++;
                             }
-                            b--;
+                            dashDone = true;
+                            b = rewind;
+                            //b--;
+                            //now at last element in line after dash
+                        }
 
+                        if (!flush && !listDetect)
+                        {
+                            if (papr.NLR(proper,b,limit) && papr.NLL(proper, b, limit))    //if same right and left indentation
+                            {
+                                //          | |
+                                flush = false;  //since no line indentation change means that should be in same paragraph
+                            }
+                            else if ((papr.LineRight(proper, b) - limit > papr.NextLineRight(proper, b))  //if same left indentation but next line is shorter than this line
+                                && papr.NLL(proper,b,limit))
+                            {
+                                //          | /
+                                newParNextLine = true;  //as next line is end of para
+                            }
+                            else if (papr.NextLineRight(proper, b) - limit > papr.LineRight(proper, b))  //if next line ends more to the right
+                            {   //if this line is shorter than next, also next para
+                                //this means end of current par so flush to para
+                                //          | \
+                                flush = true;
+                            }
+                            else if (papr.NextLineLeft(proper, b) - limit > papr.LineLeft(proper, b))     //if next line is indented
+                            {   //next line starts a new para
+                                //          \
+                                flush = true;
+                            }
+                        }
+
+                        if (!dashDone)    //if no dashes were processed
+                        {
+                            while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //add the whole line to the current paragraph
+                            {
+                                strcur.Append(proper[b][0] + " ");
+                                b++;
+                            }
+                            b--;    //last word
+                        }
+                        else dashDone = false;  //else a dash has been processed
+
+
+
+                        //now check if the line just processed ends with a - (for seperated words)
+                        if (strcur.Length > 1 && b < proper.Count - 1 && proper[b][0].Length > 0 && Int32.Parse(proper[b + 1][6]) == -1)    //here
+                        {
+                            if (proper[b][0].ElementAt(proper[b][0].Length - 1) == '-') //if a dash
+                            {
+                                dashDetect = true;
+                                strcur.Remove(strcur.Length - 2, 2);   //remove "- " so word can be continued
+                            }
+
+                            else if (proper[b][0].ElementAt(proper[b][0].Length - 1) == ':' && !listDetect)    //if : initiate a list
+                            {
+                                listDetect = true;
+                                flush = true;
+                                listMarg = papr.LineLeft(proper, b);
+                                margLineNum = b;
+                            }
+                        }
+
+                        
+
+                        if (listDetect)
+                        {
+                            if (strcur.ToString().Contains(';'))    //if in a list and the element contains a semi-colon
+                            {
+                                flush = true;
+                            }
+                            if (strcur.ToString().LastIndexOf('.') == strcur.ToString().Length - 2)    //if in a list and the element contains a semi-colon
+                            {//not getting to here
+                                flush = true;
+                                listDetect = false;
+                            }
+                            //if margin returns to original level in next two lines
+                            //if (papr.CheckLeft(proper, papr.NextLine(proper, b), margLineNum, limit)) //papr.CheckLeft(proper, b, margLineNum, limit) ||
+                            if (papr.CheckLeft(proper, papr.NextLine(proper, b), margLineNum, limit))   //AND HERE
+                            {
+                                listDetect = false;
+                                flush = true;
+                            }
+                        }
+
+
+                        if ((flush && !dashDetect))    //if flushing // || (flush && listDetect)
+                        {
+                            paragraphs.Add(strcur.ToString());
+                            //Console.WriteLine(strcur.ToString());
+                            strcur = new StringBuilder();
+                            flush = false;
+                        }
+                        else if (newParNextLine)
+                        {
+                            newParNextLine = false;
+                            flush = true;
                         }
 
                         //on new par, next iteration set curMarg
                         //finally set the new margin
+
+                        if (strcur.ToString().Contains("performing an OCR process on said patent image file prior")) {}
+
+                        
+                        //-1 counter for next (if more than 3, flush)
+                        /*
+                        int tempRew = b;
+                        while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //skip words
+                        {
+                            b++;
+                        }
+                        while (b < proper.Count && Int32.Parse(proper[b][6]) == -1)     //skip empties
+                        {
+                            b++;
+                            empty++;
+                        }
+                        if (empty > 2)
+                        {
+                            flush = true;
+                            b = tempRew;
+                        }
+                        empty = 0;
+                        b = tempRew;
+                        */
                     }
-
-                    
-
-
-                    /*
-                    if (Int32.Parse(proper[b-1][6]) != -1)  //if previous is -1, start checking
-                    //else if not -1, add the word to the current par
-                    {
-                        strcur.Append(proper[b][0]);
-                    }
-                    //do stuff
-                    */
-
-
                 }
 
                 foreach(string par in paragraphs)
                 {
-                    Console.WriteLine("=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=");
+                    Console.WriteLine("----------------------------------------------------------------");
                     Console.WriteLine(par);
                 }
-
-
-               
-
-
-
-
-
-
-
 
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine("Number of elements in the list (before filtering): " + proper.Count);
@@ -337,7 +414,9 @@ namespace Zemeris
                     }
                 }
 
+                ////
                 //display contents of each block in each page
+                /*
                 foreach(List<List<string>> page in pbw)
                 {
                     foreach (List<string> block in page)
@@ -349,6 +428,8 @@ namespace Zemeris
                         }
                     }
                 }
+                */
+                ////
 
             }   //end of foreach document
 
@@ -356,6 +437,12 @@ namespace Zemeris
             Console.ReadLine();
 
         }
+
+
+
+
+
+
     }
 }
 
@@ -391,3 +478,63 @@ process.Start();
 //System.Diagnostics.Process.Start("runItImproved.bat ",inPath+ " -psm 3 " + outPath);
 // List<string> words = System.IO.File.ReadAllText("dictionaryFULL.txt").Replace("\r", "").Split('\n').ToList();  //list of all words in FULL dictionary
 // note - use of full dictionary requires case changes
+
+
+//Console.WriteLine();
+/* THIS WAS BEING USED
+if (newPar)     //if starting new paragraph
+{
+    curMargin = Int32.Parse(proper[b][1]);
+    newPar = false;
+}
+else if (!(curMargin + limit > Int32.Parse(proper[b][1])) || !(curMargin - limit < Int32.Parse(proper[b][1])))    //if not same indentation
+{
+    if (curMargin < Int32.Parse(proper[b][1]) - limit)  //if indented inward (right)
+    {
+        paragraphs.Add(strcur.ToString());
+        newPar = true;
+        strcur = new StringBuilder();
+        //while indentation not in range
+
+    }
+    else if (curMargin > Int32.Parse(proper[b][1]) + limit)  //if indented outward (left)
+    {
+        paragraphs.Add(strcur.ToString());
+        newPar = true;
+        strcur = new StringBuilder();
+        //while indentation not in range
+
+    }
+}
+*/
+
+/*
+else if (curMargin + limit > Int32.Parse(proper[b][1]) && curMargin - limit < Int32.Parse(proper[b][1]))    //if same indentation
+{
+
+}
+*/
+
+
+
+/*
+if (Int32.Parse(proper[b-1][6]) != -1)  //if previous is -1, start checking
+//else if not -1, add the word to the current par
+{
+    strcur.Append(proper[b][0]);
+}
+//do stuff
+*/
+
+
+/*
+int alr = papr.LineRight(proper, b);
+int anlr = papr.NextLineRight(proper, b);
+int all = papr.LineLeft(proper, b);
+int anll = papr.NextLineLeft(proper, b);
+string anslr = proper[b][0];
+*/
+
+    //if state unkown check?
+
+    // 3 -1s

@@ -1,6 +1,0 @@
-runTessTSV\images\.\Sample-Patent_Combination_Hammer_and_Lumber_Manipulating_Tool\0.tiff
-runTessTSV\images\.\Sample-Patent_Combination_Hammer_and_Lumber_Manipulating_Tool\1.tiff
-runTessTSV\images\.\Sample-Patent_Combination_Hammer_and_Lumber_Manipulating_Tool\2.tiff
-runTessTSV\images\.\Sample-Patent_Combination_Hammer_and_Lumber_Manipulating_Tool\3.tiff
-runTessTSV\images\.\Sample-Patent_Combination_Hammer_and_Lumber_Manipulating_Tool\4.tiff
-runTessTSV\images\.\Sample-Patent_Combination_Hammer_and_Lumber_Manipulating_Tool\5.tiff
