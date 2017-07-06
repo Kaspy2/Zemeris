@@ -1,6 +1,0 @@
-runTessTSV\images\.\Sample-Patent_Vine_Cutter_1\0.tiff
-runTessTSV\images\.\Sample-Patent_Vine_Cutter_1\1.tiff
-runTessTSV\images\.\Sample-Patent_Vine_Cutter_1\2.tiff
-runTessTSV\images\.\Sample-Patent_Vine_Cutter_1\3.tiff
-runTessTSV\images\.\Sample-Patent_Vine_Cutter_1\4.tiff
-runTessTSV\images\.\Sample-Patent_Vine_Cutter_1\5.tiff

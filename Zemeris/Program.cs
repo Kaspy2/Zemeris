@@ -18,8 +18,11 @@ namespace Zemeris
 {
     class Program
     {
+        const int limit = 10;
+
         static void Main(string[] args)
-        { 
+        {
+            
             // Loading POS Tagger
             var tagger = new MaxentTagger(@"spostag\models\wsj-0-18-bidirectional-nodistsim.tagger");
             //a maximum entropy tagger
@@ -106,7 +109,7 @@ namespace Zemeris
                 var apl = t.Parse(fileName, true);
                 var proper2 = from stringArr in apl where (pagesToInclude.Contains(Int32.Parse(stringArr[5]))) select stringArr;
 
-                proper = new List<string[]>(proper2);
+                proper = new List<string[]>();
                 proper.AddRange(proper2);
                 //proper = proper2.ToList();  //now contains list of valids with empties
                 //an array containing word, left, top, width, height, page, conf
@@ -124,111 +127,14 @@ namespace Zemeris
                  New page detection
                  */
 
-                List<string> paragraphs = new List<string>();
+                ParaProc papr = new ParaProc();
+                List<string> paragraphs = papr.GenerateParagraphs(proper, limit);
 
-                StringBuilder strcur = new StringBuilder();     //current par
-                int curMargin = 0, curPage = 1;
-                bool newPar = false;
-                for (int b = 0; b<proper.Count; b++)
+                foreach (string par in paragraphs)
                 {
-                    if(Int32.Parse(proper[b][6]) == -1)         //if -1, check next line to see if same indentation
-                    {
-                        //bool sameMarg = true;
-                        if (Int32.Parse(proper[b][5]) != curPage)
-                        {
-                            curPage = Int32.Parse(proper[b][5]);
-                            paragraphs.Add(strcur.ToString());
-                            strcur = new StringBuilder();
-                            newPar = true;
-                        }
-
-                        while (Int32.Parse(proper[b][6]) == -1)
-                        {
-                            b++;
-                        }
-                        
-
-                        if (newPar)     //if starting new paragraph
-                        {
-                            curMargin = Int32.Parse(proper[b][1]);
-                            newPar = false;
-                        }
-                        else if(curMargin < Int32.Parse(proper[b][1]))  //if indented
-                        {
-                            paragraphs.Add(strcur.ToString());
-                            newPar = true;
-                            strcur = new StringBuilder();
-                        }
-                        /*
-                        else if (curMargin + 5 > Int32.Parse(proper[b][1]) && curMargin - 5 < Int32.Parse(proper[b][1]))    //if same indentation
-                        {
-
-                        }
-                        */
-
-
-                        while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //add the whole line
-                        {
-                            strcur.Append(proper[b][0]+" ");
-                            b++;
-                        }
-                        b--;
-
-                        //now check if the line just processed ends with a - (for seperated words)
-
-                        while(proper[b][0].ElementAt(proper[b][0].Length-1) == '-' && Int32.Parse(proper[b+1][6]) == -1)
-                        {
-                            strcur.Remove(strcur.Length-2,2);//remove "- " so word can be continued
-                            b++;
-
-                            while (Int32.Parse(proper[b][6]) == -1)     //skip empties
-                            {
-                                b++;
-                            }
-
-                            while (b < proper.Count && Int32.Parse(proper[b][6]) != -1 && Int32.Parse(proper[b][5]) == curPage)     //add the whole line
-                            {
-                                strcur.Append(proper[b][0] + " ");
-                                b++;
-                            }
-                            b--;
-
-                        }
-
-                        //on new par, next iteration set curMarg
-                        //finally set the new margin
-                    }
-
-                    
-
-
-                    /*
-                    if (Int32.Parse(proper[b-1][6]) != -1)  //if previous is -1, start checking
-                    //else if not -1, add the word to the current par
-                    {
-                        strcur.Append(proper[b][0]);
-                    }
-                    //do stuff
-                    */
-
-
-                }
-
-                foreach(string par in paragraphs)
-                {
-                    Console.WriteLine("=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=");
+                    Console.WriteLine("----------------------------------------------------------------");
                     Console.WriteLine(par);
                 }
-
-
-               
-
-
-
-
-
-
-
 
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine("Number of elements in the list (before filtering): " + proper.Count);
@@ -337,7 +243,9 @@ namespace Zemeris
                     }
                 }
 
+                ////
                 //display contents of each block in each page
+                /*
                 foreach(List<List<string>> page in pbw)
                 {
                     foreach (List<string> block in page)
@@ -349,6 +257,8 @@ namespace Zemeris
                         }
                     }
                 }
+                */
+                ////
 
             }   //end of foreach document
 
@@ -391,3 +301,95 @@ process.Start();
 //System.Diagnostics.Process.Start("runItImproved.bat ",inPath+ " -psm 3 " + outPath);
 // List<string> words = System.IO.File.ReadAllText("dictionaryFULL.txt").Replace("\r", "").Split('\n').ToList();  //list of all words in FULL dictionary
 // note - use of full dictionary requires case changes
+
+
+//Console.WriteLine();
+/* THIS WAS BEING USED
+if (newPar)     //if starting new paragraph
+{
+    curMargin = Int32.Parse(proper[b][1]);
+    newPar = false;
+}
+else if (!(curMargin + limit > Int32.Parse(proper[b][1])) || !(curMargin - limit < Int32.Parse(proper[b][1])))    //if not same indentation
+{
+    if (curMargin < Int32.Parse(proper[b][1]) - limit)  //if indented inward (right)
+    {
+        paragraphs.Add(strcur.ToString());
+        newPar = true;
+        strcur = new StringBuilder();
+        //while indentation not in range
+
+    }
+    else if (curMargin > Int32.Parse(proper[b][1]) + limit)  //if indented outward (left)
+    {
+        paragraphs.Add(strcur.ToString());
+        newPar = true;
+        strcur = new StringBuilder();
+        //while indentation not in range
+
+    }
+}
+*/
+
+/*
+else if (curMargin + limit > Int32.Parse(proper[b][1]) && curMargin - limit < Int32.Parse(proper[b][1]))    //if same indentation
+{
+
+}
+*/
+
+
+
+/*
+if (Int32.Parse(proper[b-1][6]) != -1)  //if previous is -1, start checking
+//else if not -1, add the word to the current par
+{
+    strcur.Append(proper[b][0]);
+}
+//do stuff
+*/
+
+
+/*
+int alr = papr.LineRight(proper, b);
+int anlr = papr.NextLineRight(proper, b);
+int all = papr.LineLeft(proper, b);
+int anll = papr.NextLineLeft(proper, b);
+string anslr = proper[b][0];
+*/
+
+//if state unkown check?
+
+// 3 -1s
+
+
+//TITLE , Sub Title, words, unknown
+
+
+/*
+ * and / as / as if / as long as / at / but / buy / even if / for / from / if / if only / in / into / like / near / now that / nor / of / off / on / on top of / once / onto / or / out of / over / past / so / so that / than / that / till / to / up / upon / with / when / yet
+ * */
+
+
+
+
+//-1 counter for next (if more than 3, flush)
+/*
+int tempRew = b;
+while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //skip words
+{
+    b++;
+}
+while (b < proper.Count && Int32.Parse(proper[b][6]) == -1)     //skip empties
+{
+    b++;
+    empty++;
+}
+if (empty > 2)
+{
+    flush = true;
+    b = tempRew;
+}
+empty = 0;
+b = tempRew;
+*/
