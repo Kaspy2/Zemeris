@@ -130,7 +130,7 @@ namespace Zemeris
                 List<string> paragraphs = new List<string>();
 
                 StringBuilder strcur = new StringBuilder();     //current par
-                int listMarg = 0, curPage = 1, margLineNum = 0, empty = 0;
+                int listMarg = 0, curPage = 1, margLineNum = 0;
                 bool dashDetect = false, flush = false, newParNextLine = false, dashDone = false, listDetect = false ;
                 ParaProc papr = new ParaProc();
                 //if last is ':' get next line's left, next next line's left (lookahead - make sure not same) to get indentation levels
@@ -158,12 +158,11 @@ namespace Zemeris
                             flush = true;
                         }
 
-                        while (Int32.Parse(proper[b][6]) == -1 && b<proper.Count)     //skip empties
+                        while (b < proper.Count && Int32.Parse(proper[b][6]) == -1)     //skip empties
                         {
                             b++;
                         }
-
-
+                        
                         if (dashDetect)
                         {
                             int rewind = b;
@@ -175,7 +174,6 @@ namespace Zemeris
                             }
                             dashDone = true;
                             b = rewind;
-                            //b--;
                             //now at last element in line after dash
                         }
 
@@ -217,11 +215,10 @@ namespace Zemeris
                         else dashDone = false;  //else a dash has been processed
 
 
-
-                        //now check if the line just processed ends with a - (for seperated words)
-                        if (strcur.Length > 1 && b < proper.Count - 1 && proper[b][0].Length > 0 && Int32.Parse(proper[b + 1][6]) == -1)    //here
+                        //now check if the line just processed ends with a - (for seperated words) or : (for lists)
+                        if (strcur.Length > 1 && b < proper.Count - 1 && proper[b][0].Length > 0 && (Int32.Parse(proper[b + 1][6]) == -1 || strcur.ToString()[strcur.ToString().Length-2] == '-'))    //here
                         {
-                            if (proper[b][0].ElementAt(proper[b][0].Length - 1) == '-') //if a dash
+                            if (proper[b][0].ElementAt(proper[b][0].Length - 1) == '-' || strcur.ToString()[strcur.ToString().Length - 2] == '-') //if a dash
                             {
                                 dashDetect = true;
                                 strcur.Remove(strcur.Length - 2, 2);   //remove "- " so word can be continued
@@ -235,8 +232,6 @@ namespace Zemeris
                                 margLineNum = b;
                             }
                         }
-
-                        
 
                         if (listDetect)
                         {
@@ -262,7 +257,6 @@ namespace Zemeris
                         if ((flush && !dashDetect))    //if flushing // || (flush && listDetect)
                         {
                             paragraphs.Add(strcur.ToString());
-                            //Console.WriteLine(strcur.ToString());
                             strcur = new StringBuilder();
                             flush = false;
                         }
@@ -272,32 +266,9 @@ namespace Zemeris
                             flush = true;
                         }
 
-                        //on new par, next iteration set curMarg
-                        //finally set the new margin
-
-                        if (strcur.ToString().Contains("performing an OCR process on said patent image file prior")) {}
-
-                        
-                        //-1 counter for next (if more than 3, flush)
-                        /*
-                        int tempRew = b;
-                        while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //skip words
-                        {
-                            b++;
+                        if (strcur.ToString().Contains("same becomes better understood")) {
+                            //just a general search for testing purposes
                         }
-                        while (b < proper.Count && Int32.Parse(proper[b][6]) == -1)     //skip empties
-                        {
-                            b++;
-                            empty++;
-                        }
-                        if (empty > 2)
-                        {
-                            flush = true;
-                            b = tempRew;
-                        }
-                        empty = 0;
-                        b = tempRew;
-                        */
                     }
                 }
 
@@ -437,12 +408,6 @@ namespace Zemeris
             Console.ReadLine();
 
         }
-
-
-
-
-
-
     }
 }
 
@@ -535,6 +500,38 @@ int anll = papr.NextLineLeft(proper, b);
 string anslr = proper[b][0];
 */
 
-    //if state unkown check?
+//if state unkown check?
 
-    // 3 -1s
+// 3 -1s
+
+
+//TITLE , Sub Title, words, unknown
+
+
+/*
+ * and / as / as if / as long as / at / but / buy / even if / for / from / if / if only / in / into / like / near / now that / nor / of / off / on / on top of / once / onto / or / out of / over / past / so / so that / than / that / till / to / up / upon / with / when / yet
+ * */
+
+
+
+
+//-1 counter for next (if more than 3, flush)
+/*
+int tempRew = b;
+while (b < proper.Count && Int32.Parse(proper[b][6]) != -1)     //skip words
+{
+    b++;
+}
+while (b < proper.Count && Int32.Parse(proper[b][6]) == -1)     //skip empties
+{
+    b++;
+    empty++;
+}
+if (empty > 2)
+{
+    flush = true;
+    b = tempRew;
+}
+empty = 0;
+b = tempRew;
+*/

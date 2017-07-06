@@ -96,6 +96,10 @@ namespace Zemeris
             return (LineLeft(proper, b1) < LineLeft(proper, b2) + limit) && (LineLeft(proper, b1) > LineLeft(proper, b2) - limit);
         }
 
+        public int CaseChecker(List<string[]> proper, int b)    //title, subtitle, word, unknown
+        {
+            return 1;
+        }
 
     }
 }
