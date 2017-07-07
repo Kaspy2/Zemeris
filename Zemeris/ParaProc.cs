@@ -123,7 +123,7 @@ namespace Zemeris
                     if (Int32.Parse(proper[b][5]) != curPage)   //seperates pages
                     {
                         curPage = Int32.Parse(proper[b][5]);
-                        paragraphs.Add(strcur.ToString());
+                        if (!strcur.ToString().Trim().Equals("")) paragraphs.Add(strcur.ToString());
                         strcur = new StringBuilder();
                         flush = true;
                     }
@@ -226,7 +226,7 @@ namespace Zemeris
 
                     if ((flush && !dashDetect))    //if flushing // || (flush && listDetect)
                     {
-                        paragraphs.Add(strcur.ToString());
+                        if(!strcur.ToString().Trim().Equals(""))paragraphs.Add(strcur.ToString());
                         strcur = new StringBuilder();
                         flush = false;
                     }

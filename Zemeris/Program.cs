@@ -7,7 +7,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using LemmaSharp.Classes;
-using Test.Classes;
 using edu.stanford.nlp.tagger.maxent;
 using System.Drawing.Imaging;
 
@@ -128,13 +127,56 @@ namespace Zemeris
                  */
 
                 ParaProc papr = new ParaProc();
+                SentDetection sentDetect = new SentDetection();
+
                 List<string> paragraphs = papr.GenerateParagraphs(proper, limit);
+                Dictionary<String, List<Tuple<int,int>>> wordOccurances = new Dictionary<string, List<Tuple<int, int>>>();
+
+                for (int parNo = 0; parNo < paragraphs.Count; parNo++)
+                {
+                    Console.WriteLine("Paragraph " + parNo + ": ");
+                    Console.WriteLine(paragraphs.ElementAt(parNo));
+                    Console.WriteLine("");
+                    List<List<string>> sentences = sentDetect.detectSentences(paragraphs.ElementAt(parNo));
+
+                    for (int sentNo = 0; sentNo < sentences.Count; sentNo++)
+                    {
+                        List<string> sentTokens = sentences.ElementAt(sentNo);
+                        Console.WriteLine("Sentence " + sentNo);
+                        foreach(string tempTok in sentTokens)
+                        {
+                            Console.Write(tempTok + " - ");
+                        }
+                        Console.WriteLine("");
+
+                        foreach(string tok in sentTokens)
+                        {
+                            string processedTok = SentDetection.postProcessWord(tok);
+
+                            if (!wordOccurances.ContainsKey(processedTok)) wordOccurances[processedTok] = new List<Tuple<int, int>>();
+
+                            wordOccurances[processedTok].Add(new Tuple<int, int>(parNo, sentNo));
+
+                        }
+                    }
+                }
+
+                foreach(KeyValuePair<String, List<Tuple<int,int>>> pair in wordOccurances)
+                {
+                    Console.WriteLine("Word: "+ pair.Key + ":");
+                    foreach (Tuple<int, int> list in pair.Value)
+                    {
+                        Console.WriteLine("Paragraph: " + list.Item1 + " Sentence: " + list.Item2);
+                    }
+                }
 
                 foreach (string par in paragraphs)
                 {
                     Console.WriteLine("----------------------------------------------------------------");
                     Console.WriteLine(par);
                 }
+
+
 
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine("Number of elements in the list (before filtering): " + proper.Count);
