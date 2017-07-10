@@ -14,24 +14,14 @@ namespace Zemeris
     {
         private int pc;
         private List<Process> plist = new List<Process>();
+        List<string> words = System.IO.File.ReadAllText("stopwords.txt").Replace("\r", "").Split('\n').ToList();  //list of all stop words
 
-        public List<string[]> RemoveStopWords(List <string[]> input) //input words
+        public bool isStopWord(string input) 
         {
-            List<string> words = System.IO.File.ReadAllText("stopwords.txt").Replace("\r", "").Split('\n').ToList();  //list of all stop words
-
-            List<string[]> temp = new List<string[]>();
-
-            foreach (string[] x in input)
-            {
-                //Console.WriteLine("Processing " + x.ToLower());
-                //check to see if each word is in stop words and if it is remove it
-                if ( !words.Contains( x[0].ToLower() ) )
-                {
-                    temp.Add(x);
-                }
-            }
-
-            return temp;
+            //Console.WriteLine("Processing " + x.ToLower());
+            //check to see if each word is in stop words and if it is remove it
+            return (words.Contains(input.ToLower())); 
+              
         }
 
         public List<string[]> RemoveGibberish (List<string[]> input)

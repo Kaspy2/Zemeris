@@ -13,29 +13,43 @@ namespace Zemeris
             List<string> htmlFilesUrls = new List<string>();
             htmlFilesUrls.Add("C:/Users/nikolai/Desktop/TestAbby/1page.htm");
 
-            
-            foreach(string dir in htmlFilesUrls)
+            List<Tuple<string, string, int, int, int, string>> wordIndex = new List<Tuple<string, string, int, int, int, string>>(); //word, lemma,doc,par,sent,pos
+            using (Tagger tagger = new Tagger())
             {
-                ProcessHTML ph = new ProcessHTML(dir);
-                string title = ph.getTitle();
-                List<string> paragraphs = ph.getParagraphs();
-                List<string> headings = ph.getHeadings("1");
-
-                foreach(string par in paragraphs)
+                InputString inpSt = new InputString();
+                
+                for (int docNo = 0; docNo < htmlFilesUrls.Count; docNo++)
                 {
-                    SentDetection sentDetect = new SentDetection();
-                    List<List<string>> sentences = sentDetect.detectSentences(par);
+                    string dir = htmlFilesUrls.ElementAt(docNo);
 
-                    foreach(List<string> sent in sentences)
+                    ProcessHTML ph = new ProcessHTML(dir);
+                    string title = ph.getTitle();
+                    List<string> paragraphs = ph.getParagraphs();
+                    List<string> headings = ph.getHeadings("1");
+
+                    for (int parNo = 0; parNo < htmlFilesUrls.Count; parNo++)
                     {
-                        //Pos
-                        //lemmat
+                        string par = paragraphs.ElementAt(parNo);
 
+                        SentDetection sentDetect = new SentDetection();
+                        List<List<string>> sentences = sentDetect.detectSentences(par);
+
+                        for (int sentNo =0; sentNo<sentences.Count; sentNo++)
+                        {
+                            List<string> sent = sentences.ElementAt(sentNo);
+                            var taggedoutput = tagger.Tag(sent); //2d array to hold word, lemma,  POS Tag
+                            
+                            foreach (var taggedWord in taggedoutput)
+                            {
+                                if (!inpSt.isStopWord(taggedWord.Item1))
+                                {
+                                    wordIndex.Add(new Tuple<string, string, int, int, int, string>(taggedWord.Item1, taggedWord.Item2, docNo, parNo, sentNo, taggedWord.Item3));
+                                }
+                            }  
+                        }
                     }
                 }
-
             }
-            
         }
     }
 }

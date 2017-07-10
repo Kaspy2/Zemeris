@@ -9,17 +9,31 @@ using System.Threading.Tasks;
 
 namespace Zemeris
 {
-    class Tagger
+    class Tagger : IDisposable
     {
-        // Loading POS Tagger
-        public List<Tuple<string, string, string>> Tag(List<string> sentence)
-        {
+        Lemmatizer lemmatizer;
+        MaxentTagger tagger;
+        FileStream fstream;
+        public Tagger()
+        {   
+            
             var currentDirectory = Directory.GetCurrentDirectory();
             var dataFilePath = string.Format("{0}/{1}/{2}", currentDirectory, "../../../Lemma/Test/Data/Custom", "full7z-mlteast-en-modified.lem");
-            
-            var tagger = new MaxentTagger(@"spostag\models\wsj-0-18-bidirectional-nodistsim.tagger");
+            fstream = File.OpenRead(dataFilePath);
+            lemmatizer = new Lemmatizer(fstream);
+            tagger = new MaxentTagger(@"spostag\models\wsj-0-18-bidirectional-nodistsim.tagger");
             //a maximum entropy tagger
+        }
 
+        public void Dispose() {
+            fstream.Close();
+            lemmatizer = null;
+            tagger = null;
+        }
+
+        // Loading POS Tagger
+        public  List<Tuple<string, string, string>> Tag(List<string> sentence)
+        {
             StringBuilder sb = new StringBuilder();
             foreach(string s in sentence)
             {
@@ -28,10 +42,7 @@ namespace Zemeris
             
             string taggedA = tagger.tagTokenizedString(sb.ToString().Trim());
             List<Tuple<string,string,string>> outp = new List<Tuple<string,string,string>>(); //2d array to hold word, lemma,  POS Tag
-
-            using (var fstream = File.OpenRead(dataFilePath))
-            {
-                var lemmatizer = new Lemmatizer(fstream);
+            
                 foreach (string pSplit in taggedA.Split(' '))
                 {
                     if (pSplit.Length > 0 && pSplit != " ")
@@ -44,9 +55,7 @@ namespace Zemeris
                         //Console.WriteLine(word + " : " + tag);
                     }
                 }
-            }
-
-
+            
             //Console.WriteLine("Tokenized tagged string is: "+taggedA);
 
             return outp;

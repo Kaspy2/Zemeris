@@ -188,7 +188,7 @@ namespace Zemeris
                 //DOM > Parsed DOM > List of paras > 
                 Console.WriteLine("Initializing POS Tagging ...");
                 Tagger xa = new Tagger();
-                xa.Tag(/**/);  //pass sentence, returns tagged
+               // xa.Tag(/**/);  //pass sentence, returns tagged
                 Console.WriteLine("Done!");
                 Console.WriteLine("-------------------------------------------------");
                 Console.WriteLine("Removing stopwords ...");
