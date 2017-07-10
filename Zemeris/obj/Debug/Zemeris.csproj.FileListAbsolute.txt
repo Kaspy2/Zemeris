@@ -129,6 +129,12 @@ D:\Projects\ProjectZemeris\Zemeris\bin\Debug\stanford-postagger-3.7.0.dll
 D:\Projects\ProjectZemeris\Zemeris\bin\Debug\LemmaSharp.pdb
 D:\Projects\ProjectZemeris\Zemeris\bin\Debug\PdfiumViewer.xml
 D:\Projects\ProjectZemeris\Zemeris\bin\Debug\nl\PdfiumViewer.resources.dll
+<<<<<<< HEAD
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\HtmlAgilityPack.dll
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\HtmlAgilityPack.xml
+=======
+D:\Projects\ProjectZemeris\Zemeris\bin\Debug\HtmlAgilityPack.dll
+D:\Projects\ProjectZemeris\Zemeris\bin\Debug\HtmlAgilityPack.pdb
+D:\Projects\ProjectZemeris\Zemeris\bin\Debug\HtmlAgilityPack.xml
+>>>>>>> c947f5c02d7be4c729c55ff0e10088f1a2324eef
