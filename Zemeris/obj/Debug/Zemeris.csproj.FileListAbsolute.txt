@@ -45,8 +45,6 @@ C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\PdfiumViewer.xml
 C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\nl\PdfiumViewer.resources.dll
 C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\OpenNLP.dll
 C:\Users\gabrielf\Desktop\Zemeris\Zemeris\bin\Debug\SharpEntropy.dll
-C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\x64\pdfium.dll
-C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\x86\pdfium.dll
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\Zemeris.exe.config
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\Zemeris.exe
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\Zemeris.pdb
@@ -83,10 +81,7 @@ C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\OpenNLP.dll
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\PdfiumViewer.dll
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\SharpEntropy.dll
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\stanford-postagger-3.7.0.dll
-C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\Test.exe
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\LemmaSharp.pdb
-C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\Test.pdb
-C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\Test.exe.config
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\PdfiumViewer.xml
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\nl\PdfiumViewer.resources.dll
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\obj\Debug\Zemeris.csprojResolveAssemblyReference.cache
@@ -134,3 +129,6 @@ D:\Projects\ProjectZemeris\Zemeris\bin\Debug\stanford-postagger-3.7.0.dll
 D:\Projects\ProjectZemeris\Zemeris\bin\Debug\LemmaSharp.pdb
 D:\Projects\ProjectZemeris\Zemeris\bin\Debug\PdfiumViewer.xml
 D:\Projects\ProjectZemeris\Zemeris\bin\Debug\nl\PdfiumViewer.resources.dll
+C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\HtmlAgilityPack.dll
+C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\HtmlAgilityPack.xml

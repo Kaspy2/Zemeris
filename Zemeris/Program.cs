@@ -21,12 +21,8 @@ namespace Zemeris
 
         static void Main(string[] args)
         {
-            
-            // Loading POS Tagger
-            var tagger = new MaxentTagger(@"spostag\models\wsj-0-18-bidirectional-nodistsim.tagger");
-            //a maximum entropy tagger
             //left 7, top 8, width 9, height 10 (-1 for proper index)
-
+            
             InputString i = new InputString();  //create a new instance on the object InputString 
             //to be used for basic processing of the PDFs into imgs and imgs into text
 
@@ -43,7 +39,8 @@ namespace Zemeris
             foreach (string fileName in Directory.GetFiles(@"Tesseract\runTessTSV\output")) //for each TSV file in the output folder
             {
                 List<string[]> proper = t.Parse(fileName,false);  //parse it
-
+                
+                //page selection -> to move to new class
                 //pages = proper [i] [4]
                 int c = 0, lastPageNum = 1;
                 List<int> myarr = new List<int>();
@@ -177,81 +174,35 @@ namespace Zemeris
                 }
 
 
-
+                /*
                 Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine("Number of elements in the list (before filtering): " + proper.Count);
                 //Console.WriteLine(og);
 
-                //decorate the console with a loading spinner
-                //Spinner turner = new Spinner(Console.CursorLeft,Console.CursorTop);
-                //turner.Start();
-
                 //filter the list
                 List<string[]> x = i.RemoveGibberish(i.RemoveStopWords(proper)); //now a list with no stop words and no gibberish
 
-                //turner.Stop();
-
                 Console.WriteLine("Number of elements in the list (after filtering): " + x.Count);
+                Console.WriteLine("-------------------------------------------------");
+                */
+                Console.WriteLine("Initializing POS Tagging ...");
+                Tagger xa = new Tagger();
+                xa.Tag("");  //pass sentence, returns tagged
+                Console.WriteLine("Done!");
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("Removing stopwords ...");
+
+                Console.WriteLine("Done!");
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("Lemmatizing ...");
+
+                Console.WriteLine("Done!");
                 Console.WriteLine("-------------------------------------------------");
 
                 List<List<string>> y = new List<List<string>>();    //list of lists
 
                 //now lemmatize and POS Tag
-                var currentDirectory = Directory.GetCurrentDirectory();
-                var dataFilePath = string.Format("{0}/{1}/{2}", currentDirectory, "../../../Lemma/Test/Data/Custom", "full7z-mlteast-en-modified.lem");
-                using (var fstream = File.OpenRead(dataFilePath))
-                {
-                    var lemmatizer = new Lemmatizer(fstream);
-
-                    int cs = 0, cf = 0;
-
-                    string[] arr = new string[1160];
-
-                    foreach (string[] currStr in x)
-                    {
-                        string lemma = lemmatizer.Lemmatize(currStr[0]);    //finding the lemma of currStr[0] - where currStr[0] is the word
-                        List<string> tempList = new List<string>();
-                        tempList.Add(currStr[0]);   //word
-                        tempList.Add(lemma);        //lemma
-                        tempList.Add(currStr[1]);   //x
-                        tempList.Add(currStr[2]);   //y
-                        tempList.Add(currStr[3]);   //page
-                        tempList.Add(currStr[4]);   //block
-
-                        //now POS Tagging
-                        try
-                        {
-                            string stringWithTag = tagger.tagString(currStr[0].ToLower());
-                            //tagger.addTag(currStr[0].ToLower()) //returns an integer - different depending on word
-                            string tag = stringWithTag.Substring(stringWithTag.LastIndexOf('_') + 1);
-                            if (lemma != "")
-                            {
-                                //Console.WriteLine(currStr[0] + " --> " + lemma + " : " + tag);
-                                tempList.Add(tag);  //POS tag
-                                cs++;
-                                y.Add(tempList);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Exception!");
-                            arr[cf] = currStr[0];
-                            cf++;
-                        }
-                    }
-
-                    //print the exception words (if any)
-                    Array.Resize(ref arr, cf);
-                    foreach (string s in arr)
-                    {
-                        Console.WriteLine(s);
-                    }
-
-                    //y now contain sets of (word, lemma, left, top, page, block, tag) 
-                    Console.WriteLine("Successful: " + cs + " Exceptions:" + cf);
-                    Console.WriteLine("-------------------------------------------------");
-
-                }
+                // LEMMA WAS HERE
 
                 List<List<List<string>>> pbw = new List<List<List<string>>>();  //pages > blocks > words
 
