@@ -185,9 +185,11 @@ namespace Zemeris
                 Console.WriteLine("Number of elements in the list (after filtering): " + x.Count);
                 Console.WriteLine("-------------------------------------------------");
                 */
+                //DOM > Parsed DOM > List of paras > 
                 Console.WriteLine("Initializing POS Tagging ...");
                 Tagger xa = new Tagger();
-                xa.Tag("");  //pass sentence, returns tagged
+                xa.Tag(/*List<string> a .Join*/);  //pass sentence, returns tagged
+                string a = String.Join(" ", paragraphs);
                 Console.WriteLine("Done!");
                 Console.WriteLine("-------------------------------------------------");
                 Console.WriteLine("Removing stopwords ...");
