@@ -20,8 +20,14 @@ namespace Zemeris
             var tagger = new MaxentTagger(@"spostag\models\wsj-0-18-bidirectional-nodistsim.tagger");
             //a maximum entropy tagger
 
-            string taggedA = tagger.tagTokenizedString(String.Join(" ", sentence));
-            List<Tuple<string,string,string>> outp = new List<Tuple<string,string,string>>(); //2d array to hold word, POS Tag
+            StringBuilder sb = new StringBuilder();
+            foreach(string s in sentence)
+            {
+                sb.Append(s + " ");
+            }
+            
+            string taggedA = tagger.tagTokenizedString(sb.ToString().Trim());
+            List<Tuple<string,string,string>> outp = new List<Tuple<string,string,string>>(); //2d array to hold word, lemma,  POS Tag
 
             using (var fstream = File.OpenRead(dataFilePath))
             {
