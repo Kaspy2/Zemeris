@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using System.IO;
+using CsvHelper;
+
 namespace Zemeris
 {
     class MainProgram
@@ -11,7 +14,8 @@ namespace Zemeris
         static void Main(string[] args)
         {
             List<string> htmlFilesUrls = new List<string>();
-            htmlFilesUrls.Add("C:/Users/nikolai/Desktop/TestAbby/1page.htm");
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            htmlFilesUrls.Add(@"./ABBYY Output/1page.htm");
 
             List<Tuple<string, string, int, int, int, string>> wordIndex = new List<Tuple<string, string, int, int, int, string>>(); //word, lemma,doc,par,sent,pos
             using (Tagger tagger = new Tagger())
@@ -27,7 +31,7 @@ namespace Zemeris
                     List<string> paragraphs = ph.getParagraphs();
                     List<string> headings = ph.getHeadings("1");
 
-                    for (int parNo = 0; parNo < htmlFilesUrls.Count; parNo++)
+                    for (int parNo = 0; parNo < paragraphs.Count; parNo++)
                     {
                         string par = paragraphs.ElementAt(parNo);
 
@@ -43,13 +47,23 @@ namespace Zemeris
                             {
                                 if (!inpSt.isStopWord(taggedWord.Item1))
                                 {
-                                    wordIndex.Add(new Tuple<string, string, int, int, int, string>(taggedWord.Item1, taggedWord.Item2, docNo, parNo, sentNo, taggedWord.Item3));
+                                    wordIndex.Add(new Tuple<string, string, int, int, int, string>(taggedWord.Item1.ToLower(), taggedWord.Item2.ToLower(), docNo, parNo, sentNo, taggedWord.Item3));
                                 }
                             }  
                         }
                     }
                 }
             }
+
+            using (StreamWriter file = new StreamWriter(@"./OutputTSV/TestFile.csv", true))
+            {
+                var csv = new CsvWriter(file);
+                csv.WriteRecords(wordIndex);
+            }
+
+
+
+
         }
     }
 }

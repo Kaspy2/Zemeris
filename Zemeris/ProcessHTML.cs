@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace Zemeris
 {
@@ -62,7 +63,8 @@ namespace Zemeris
         }
         static void Main(string[] args)
         {
-            ProcessHTML ph = new ProcessHTML((@"C:/Users/nikolai/Desktop/TestAbby/1page.htm"));
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            ProcessHTML ph = new ProcessHTML((@"./ABBYY Output/1page.htm")); //directory to ABBYY output
             Console.WriteLine(ph.getTitle());
             Console.WriteLine();
             ph.getParagraphs();

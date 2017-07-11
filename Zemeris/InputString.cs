@@ -20,7 +20,7 @@ namespace Zemeris
         {
             //Console.WriteLine("Processing " + x.ToLower());
             //check to see if each word is in stop words and if it is remove it
-            return (words.Contains(input.ToLower())); 
+            return (input.Trim().Length <= 1 || words.Contains(input.ToLower()));
               
         }
 
