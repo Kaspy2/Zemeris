@@ -675,3 +675,9 @@ e.g.
 no.
 fig.
 figs.
+-lrb-
+-rrb-
+-rcb-
+-lcb-
+-lsb-
+-rsb-
