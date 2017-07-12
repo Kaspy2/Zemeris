@@ -34,8 +34,9 @@ namespace Zemeris
             Regex rgx = new Regex("&nbsp;");
 
             List<string> paragraphs = new List<string>();
+            if (data == null) return new List<string>();
 
-            foreach(var d in data)
+            foreach (var d in data)
             {
                 string result = rgx.Replace(d.InnerText, " ");
                 paragraphs.Add(result);
@@ -52,6 +53,7 @@ namespace Zemeris
 
             List<string> heads = new List<string>();
 
+            if (data == null) return new List<string>();
             foreach (var d in data)
             {
                 string result = rgx.Replace(d.InnerText, " ");

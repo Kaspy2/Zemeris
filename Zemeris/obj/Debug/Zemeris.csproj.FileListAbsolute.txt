@@ -90,3 +90,5 @@ C:\Users\gabrielf\Documents\Zemeris\Zemeris\obj\Debug\Zemeris.exe
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\obj\Debug\Zemeris.pdb
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\CsvHelper.dll
 C:\Users\gabrielf\Documents\Zemeris\Zemeris\bin\Debug\CsvHelper.xml
+D:\Projects\ProjectZemeris\Zemeris\bin\Debug\CsvHelper.dll
+D:\Projects\ProjectZemeris\Zemeris\bin\Debug\CsvHelper.xml
