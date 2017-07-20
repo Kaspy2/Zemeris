@@ -16,8 +16,12 @@ namespace Zemeris
         {
             List<string> htmlFilesUrls = new List<string>();
             Console.WriteLine(Directory.GetCurrentDirectory());
-            htmlFilesUrls.Add(@"./ABBYY Output/pdfTest.htm");
-
+            
+            foreach (string f in Directory.GetFiles(Directory.GetCurrentDirectory() + "\\ABBYY Output\\"))
+            {
+                Console.WriteLine(f);
+                htmlFilesUrls.Add(f);
+            }
             List<Tuple<string, string, int, int, int, string>> wordIndex = new List<Tuple<string, string, int, int, int, string>>(); //word, lemma,doc,par,sent,pos
             List<Tuple<string, string,  int, int, int, string>> wordGroupings = new List<Tuple<string, string, int, int, int, string>>();
 
